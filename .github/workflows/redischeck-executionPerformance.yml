@@ -1,4 +1,4 @@
-name: Execution Performance for Location redis check
+name: Performance with publish for Location redis check
 
 on:
   workflow_dispatch:
