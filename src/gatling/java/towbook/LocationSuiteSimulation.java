@@ -20,9 +20,9 @@ public class LocationSuiteSimulation extends Simulation {
     static String password = "10dev2";
 
     static Integer rampTo = Integer.parseInt(System.getProperty("rampTo", "10"));
-    static Integer rampTime = Integer.parseInt(System.getProperty("rampTime", "30"));
+    static Integer rampTime = Integer.parseInt(System.getProperty("rampTime", "1"));
     static Integer concurrentUsers = Integer.parseInt(System.getProperty("concurrentUsers", "20"));
-    static Integer concurrentTime = Integer.parseInt(System.getProperty("concurrentTime", "60"));
+    static Integer concurrentTime = Integer.parseInt(System.getProperty("concurrentTime", "3"));
 
     static boolean initialized = false;
 
@@ -131,9 +131,9 @@ public class LocationSuiteSimulation extends Simulation {
         setUp(
                 scn.injectClosed(
                         rampConcurrentUsers(1).to(rampTo).
-                                during(Duration.ofSeconds(rampTime)),
+                                during(Duration.ofMinutes(rampTime)),
                         constantConcurrentUsers(concurrentUsers).
-                                during(Duration.ofSeconds(concurrentTime))))
+                                during(Duration.ofMinutes(concurrentTime))))
                 .protocols(httpProtocol);
     }
 

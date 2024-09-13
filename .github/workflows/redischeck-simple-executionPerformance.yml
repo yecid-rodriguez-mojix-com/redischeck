@@ -18,26 +18,26 @@ on:
         description: 'Api token'
         required: true
         default: 'a1bea768bdf4764656812c206c60589b50983b5c0a6cb345da89aff3393540b1be'
-      rampTime:
-        type: string
-        description: 'Ramp time'
-        required: true
-        default: '30'
       rampTo:
         type: string
         description: 'Ramp users to'
         required: true
         default: '10'
-      concurrentTime:
+      rampTime:
         type: string
-        description: 'Concurrent time'
+        description: 'Ramp time (minutes)'
         required: true
-        default: '60'
+        default: '1'
       concurrent:
         type: string
         description: 'Concurrent users'
         required: true
         default: '20'
+      concurrentTime:
+        type: string
+        description: 'Concurrent time (minutes)'
+        required: true
+        default: '3'
 
 jobs:
   execpokemonapi:
@@ -57,7 +57,7 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Execute test
-        run: gradle gatlingRun --simulation=${{ inputs.testSuite }} -DbaseUrl=${{ inputs.baseUrl }} -DapiToken=${{ inputs.apiToken }} -DrampTime=${{ inputs.rampTime }} -DrampTo=${{ inputs.rampTo }} -DconcurrentTime=${{ inputs.concurrentTime }} -DconcurrentUsers=${{ inputs.concurrent }}
+        run: gradle gatlingRun --simulation=${{ inputs.testSuite }} -DbaseUrl=${{ inputs.baseUrl }} -DapiToken=${{ inputs.apiToken }} -DrampTo=${{ inputs.rampTo }} -DrampTime=${{ inputs.rampTime }} -DconcurrentUsers=${{ inputs.concurrent }} -DconcurrentTime=${{ inputs.concurrentTime }}
 
       - name: Save report
         if: ${{always()}}
