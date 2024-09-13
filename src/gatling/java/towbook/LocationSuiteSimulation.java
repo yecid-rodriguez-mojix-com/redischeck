@@ -13,10 +13,18 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 public class LocationSuiteSimulation extends Simulation {
 
     // Define target Url
-    String baseUrl = System.getProperty("baseUrl", "http://localhost");
-    String xApiToken = "436a428234cb49e99a026e46516f548a64b9e82e9718417f87a26d99f2aa3405"; //local
+    String baseUrl = System.getProperty("baseUrl", "http://localhost:5000");
+    String xApiToken = System.getProperty("apiToken", "436a428234cb49e99a026e46516f548a64b9e82e9718417f87a26d99f2aa3405");
+
     static String username = "johndoe";
     static String password = "10dev2";
+
+    static Integer rampTo = Integer.parseInt(System.getProperty("rampTo", "10"));
+    static Integer rampTime = Integer.parseInt(System.getProperty("rampTime", "30"));
+    static Integer concurrentUsers = Integer.parseInt(System.getProperty("concurrentUsers", "20"));
+    static Integer concurrentTime = Integer.parseInt(System.getProperty("concurrentTime", "60"));
+
+    static boolean initialized = false;
 
     private HttpProtocolBuilder httpProtocol = http
             .baseUrl(baseUrl)
@@ -25,6 +33,17 @@ public class LocationSuiteSimulation extends Simulation {
             .acceptHeader("application/json")
             .header("X-Api-Token", xApiToken);
 
+    private static ChainBuilder initSession =
+            doIf(session -> !initialized).then(
+                    exec(session -> {
+                        System.out.println( "rampTo: " + rampTo);
+                        System.out.println( "rampTime: " + rampTime.toString());
+                        System.out.println( "concurrentUsers: " + concurrentUsers.toString());
+                        System.out.println( "concurrentTime: " + concurrentTime);
+                        initialized = true;
+                        return session;
+                    })
+            );
 
     private static class Authentication {
         private static ChainBuilder authenticate =
@@ -102,6 +121,7 @@ public class LocationSuiteSimulation extends Simulation {
     }
 
     private ScenarioBuilder scn = scenario("Change location Simulation")
+            .exec(initSession)
             //.exec(Authentication.authenticate)
             .exec(Locations.changePosition)
             //.exec(Health.checkHealth)
@@ -110,10 +130,10 @@ public class LocationSuiteSimulation extends Simulation {
     {
         setUp(
                 scn.injectClosed(
-                        rampConcurrentUsers(1).to(70).
-                                during(Duration.ofSeconds(180)),
-                        constantConcurrentUsers(75).
-                                during(Duration.ofSeconds(120))))
+                        rampConcurrentUsers(1).to(rampTo).
+                                during(Duration.ofSeconds(rampTime)),
+                        constantConcurrentUsers(concurrentUsers).
+                                during(Duration.ofSeconds(concurrentTime))))
                 .protocols(httpProtocol);
     }
 
