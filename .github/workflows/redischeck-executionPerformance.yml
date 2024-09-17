@@ -17,7 +17,7 @@ on:
         type: string
         description: 'Api token'
         required: true
-        default: 'a1bea768bdf4764656812c206c60589b50983b5c0a6cb345da89aff3393540b1be'
+        default: '71dccd70f6194b27a05fba37519c3105a0850d45eff9408a8e8aa0705f1de8c9'
       rampTime:
         type: string
         description: 'Ramp time'
