@@ -14,7 +14,7 @@ public class LocationSuiteSimulation extends Simulation {
 
     // Define target Url
     String baseUrl = System.getProperty("baseUrl", "http://localhost:5000");
-    String xApiToken = System.getProperty("apiToken", "436a428234cb49e99a026e46516f548a64b9e82e9718417f87a26d99f2aa3405");
+    String xApiToken = System.getProperty("apiToken", "5e7be6e64dd64c19aa9d385a12314d953b2207a138b1453293f43c2e5ab550be");
 
     static String username = "johndoe";
     static String password = "10dev2";
@@ -22,7 +22,7 @@ public class LocationSuiteSimulation extends Simulation {
     static Integer rampTo = Integer.parseInt(System.getProperty("rampTo", "10"));
     static Integer rampTime = Integer.parseInt(System.getProperty("rampTime", "1"));
     static Integer concurrentUsers = Integer.parseInt(System.getProperty("concurrentUsers", "20"));
-    static Integer concurrentTime = Integer.parseInt(System.getProperty("concurrentTime", "3"));
+    static Integer concurrentTime = Integer.parseInt(System.getProperty("concurrentTime", "2"));
 
     static boolean initialized = false;
 
