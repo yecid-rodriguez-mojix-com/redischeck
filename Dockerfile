@@ -1,9 +1,12 @@
 #image to run gatling tests
 FROM gradle:8.10.1-jdk17 AS build
 
+RUN apt-get update
+RUN apt-get install htop -y
+RUN apt-get install lsof -y
+
 ARG BASE_URL=http://localhost:5000
 ARG API_TOKEN=5e7be6e64dd64c19aa9d385a12314d953b2207a138b1453293f43c2e5ab550be
-ARG RAMP_TO=10
 ARG RAMP_TO=10
 ARG RAMP_TIME=1
 ARG CONCURRENT_USERS=20
@@ -24,7 +27,7 @@ ENV ENV_CONCURRENT_TIME=$CONCURRENT_TIME
 
 #RUN gradle gatlingRun --simulation=towbook.LocationSuiteSimulation  -DbaseUrl=$BASE_URL -DapiToken=$API_TOKEN -DrampTo=$RAMP_TO -DrampTime=$RAMP_TIME -DconcurrentUsers=$CONCURRENT_USERS -DconcurrentTime=$CONCURRENT_TIME
 
-#ENTRYPOINT ["/bin/sh","/home/gradle/redischeck/launch.sh"]
+#ENTRYPOINT ["/bin/sh","/home/gradle/redischeck/launcher.sh"]
 
 
 # #Final image
