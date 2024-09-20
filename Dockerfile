@@ -35,4 +35,6 @@ ENV ENV_CONCURRENT_TIME=$CONCURRENT_TIME
 # WORKDIR /opt/gatling/results
 
 #ENTRYPOINT ["tail", "-f", "/dev/null"]
+
+COPY keep-running.sh /keep-running.sh
 ENTRYPOINT ["/keep-running.sh"]
