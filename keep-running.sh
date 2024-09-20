@@ -2,4 +2,4 @@
 
 echo "Hi $1"
 time=$(date)
-echo "Finished build at $time" >> $GITHUB_OUTPUT
+echo "time=$time" >> $GITHUB_OUTPUT
