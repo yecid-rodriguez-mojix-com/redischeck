@@ -1,20 +1,23 @@
 package towbook;
 
+import io.gatling.javaapi.core.ChainBuilder;
+import io.gatling.javaapi.core.FeederBuilder;
+import io.gatling.javaapi.core.ScenarioBuilder;
+import io.gatling.javaapi.core.Simulation;
+import io.gatling.javaapi.http.HttpProtocolBuilder;
+
 import java.time.Duration;
-import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import io.gatling.javaapi.core.*;
-import io.gatling.javaapi.http.*;
-
 import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.http.HttpDsl.*;
+import static io.gatling.javaapi.http.HttpDsl.http;
+import static io.gatling.javaapi.http.HttpDsl.status;
 
-public class LocationSuiteSimulation extends Simulation {
+public class LocationMultipleSimulation extends Simulation {
 
     // Define target Url
     String baseUrl = System.getProperty("baseUrl", "http://localhost:5000");
-    String xApiToken = System.getProperty("apiToken", "5e7be6e64dd64c19aa9d385a12314d953b2207a138b1453293f43c2e5ab550be");
+    String xApiToken = System.getProperty("apiToken", "b644a7f8f1894435b468cee4fd1cf060b2d3f2def7bd4803a782392cb52c9865");
 
     static String username = "johndoe";
     static String password = "10dev2";
@@ -109,7 +112,7 @@ public class LocationSuiteSimulation extends Simulation {
                                 .check(status().is(200))
                                 .check(
                                     bodyString().saveAs("HEALTH")
-                                        //,
+                                    //,
                                     //jsonPath("$.serviceHealth").saveAs("redisStats")
                                 )
                         )
@@ -124,17 +127,32 @@ public class LocationSuiteSimulation extends Simulation {
             .exec(initSession)
             //.exec(Authentication.authenticate)
             .exec(Locations.changePosition)
-            //.exec(Health.checkHealth)
+            .exec(Health.checkHealth)
             ;
 
+    private boolean runClosed = false;
+
     {
-        setUp(
-                scn.injectClosed(
-                        rampConcurrentUsers(1).to(rampTo).
-                                during(Duration.ofMinutes(rampTime)),
-                        constantConcurrentUsers(concurrentUsers).
-                                during(Duration.ofMinutes(concurrentTime))))
-                .protocols(httpProtocol);
+        if(runClosed) {
+            setUp(scn.injectClosed(
+                    rampConcurrentUsers(1).to(rampTo).
+                            during(Duration.ofMinutes(rampTime)),
+                    constantConcurrentUsers(concurrentUsers).
+                            during(Duration.ofMinutes(concurrentTime)))
+            )
+            .protocols(httpProtocol);
+        } else {
+            setUp(scn.injectOpen(
+                    atOnceUsers(100),
+                    nothingFor(Duration.ofSeconds(5)),
+                    rampUsers(200).during(Duration.ofSeconds(20)),
+                    nothingFor(Duration.ofSeconds(10)),
+                    constantUsersPerSec(20).during(Duration.ofSeconds(20)),
+                    stressPeakUsers(1000).during(10)
+                    )
+            )
+            .protocols(httpProtocol);
+        }
     }
 
 }
