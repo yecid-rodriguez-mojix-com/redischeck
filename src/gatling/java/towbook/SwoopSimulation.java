@@ -208,7 +208,7 @@ public class SwoopSimulation extends Simulation {
 
     }
 
-    private ScenarioBuilder scn = scenario("Change location Simulation")
+    private ScenarioBuilder scn = scenario("Create Swoop CallRequest")
             .exec(initSession)
             .exec(MotorClub.notify)
             //.exec(Health.checkHealth)
@@ -216,13 +216,13 @@ public class SwoopSimulation extends Simulation {
 
     {
         setUp(
-//                scn.injectOpen(
-//                        atOnceUsers(1)
-//                )
-                scn.injectClosed(
-                        rampConcurrentUsers(1).to(rampTo).
-                                during(Duration.ofSeconds(rampTime))
+                scn.injectOpen(
+                        atOnceUsers(3)
                 )
+//                scn.injectClosed(
+//                        rampConcurrentUsers(1).to(rampTo).
+//                                during(Duration.ofSeconds(rampTime))
+//                )
 
         )
                 .protocols(httpProtocol);
